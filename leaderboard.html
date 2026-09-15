@@ -1,200 +1,847 @@
-<!doctype html>
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Leaderboard — ValoriaTiers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Leaderboard | ValoriaTiers</title>
+
   <link rel="stylesheet" href="css/style.css">
+
+  <style>
+
+    body {
+      overflow-x: hidden;
+    }
+
+    .leaderboard-wrapper {
+      max-width: 1200px;
+      margin: auto;
+      padding: 70px 24px 100px;
+    }
+
+    .leaderboard-header {
+      margin-bottom: 35px;
+    }
+
+    .leaderboard-header h1 {
+      font-size: clamp(38px, 6vw, 60px);
+      margin: 8px 0;
+      letter-spacing: -2px;
+    }
+
+    .leaderboard-header p {
+      color: #858ca7;
+      max-width: 650px;
+      line-height: 1.6;
+    }
+
+    /* FILTERS */
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .filter {
+      background: rgba(13, 16, 32, .85);
+      border: 1px solid #252a43;
+      border-radius: 13px;
+      padding: 13px 15px;
+      color: white;
+      outline: none;
+      font: inherit;
+    }
+
+    .filter:focus {
+      border-color: #7467ff;
+    }
+
+    /* TABLE */
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid #20253d;
+      background: rgba(12, 15, 30, .82);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    th {
+      text-align: left;
+      padding: 17px 18px;
+      color: #747b98;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      border-bottom: 1px solid #20253d;
+    }
+
+    td {
+      padding: 17px 18px;
+      border-bottom: 1px solid rgba(37, 42, 67, .55);
+      color: #dce0ef;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      transition: .2s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(116, 103, 255, .055);
+    }
+
+    .rank {
+      font-weight: 900;
+      color: #858ca7;
+      width: 70px;
+    }
+
+    .player-name {
+      font-weight: 800;
+      color: white;
+    }
+
+    .gamemode {
+      color: #9298b2;
+    }
+
+    .tier {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      padding: 7px 10px;
+      border-radius: 9px;
+      background: rgba(116, 103, 255, .12);
+      border: 1px solid rgba(116, 103, 255, .22);
+      color: #bdb6ff;
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .passed {
+      color: #76e0ae;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .failed {
+      color: #ff8798;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #858ca7;
+    }
+
+    .empty strong {
+      display: block;
+      color: white;
+      font-size: 20px;
+      margin-bottom: 7px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #858ca7;
+    }
+
+    .error {
+      display: none;
+      margin-bottom: 18px;
+      padding: 13px;
+      border-radius: 11px;
+      color: #ff8798;
+      background: rgba(255, 60, 90, .08);
+      border: 1px solid rgba(255, 60, 90, .2);
+    }
+
+    .live-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 12px;
+      color: #6fcaff;
+      font-size: 12px;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #6fcaff;
+      box-shadow: 0 0 12px rgba(111, 202, 255, .8);
+    }
+
+    @media (max-width: 650px) {
+
+      .leaderboard-wrapper {
+        padding: 50px 18px 80px;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style>
 </head>
+
+
 <body>
-  <div class="grid"></div>
-  <header>
-    <a class="brand" href="index.html">
-      <b>V</b> VALORIA<span>TIERS</span>
-    </a>
-<nav>
-  <a href="index.html">Home</a>
-  <a href="players.html">Players</a>
-  <a href="leaderboard.html">Leaderboard</a>
-  <a href="test.html">Get Tested</a>
-</nav>
-<a class="navbtn" href="test.html">Request Test</a>
+
+
+  <!-- NAVBAR -->
+
+  <header class="navbar">
+
+    <div class="nav-inner">
+
+      <a href="index.html" class="brand">
+        Valoria<span>Tiers</span>
+      </a>
+
+      <nav>
+
+        <a href="players.html">
+          Players
+        </a>
+
+        <a href="leaderboard.html">
+          Leaderboard
+        </a>
+
+        <a href="test.html">
+          Get Tested
+        </a>
+
+        <a href="tester.html">
+          Tester
+        </a>
+
+      </nav>
+
+    </div>
+
   </header>
-  <main class="page">
-<section class="title reveal">
-  <small>RANKINGS</small>
-  <h1>Leaderboard</h1>
-  <p>The highest verified placements across ValoriaTiers.</p>
-</section>
-<div class="filters reveal">
-  <select id="modeFilter">
-    <option value="">All Gamemodes</option>
-  </select>
-  <select id="tierFilter">
-    <option value="">All Tiers</option>
-    <option value="HT1">HT1</option>
-    <option value="LT1">LT1</option>
-    <option value="HT2">HT2</option>
-    <option value="LT2">LT2</option>
-    <option value="HT3">HT3</option>
-    <option value="LT3">LT3</option>
-    <option value="HT4">HT4</option>
-    <option value="LT4">LT4</option>
-    <option value="HT5">HT5</option>
-    <option value="LT5">LT5</option>
-  </select>
-</div>
-<div class="table reveal">
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Player</th>
-        <th>Gamemode</th>
-        <th>Tier</th>
-        <th>Result</th>
-      </tr>
-    </thead>
-    <tbody id="leaderboardBody">
-      <tr>
-        <td colspan="5" class="empty">Loading...</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+
+
+
+  <main>
+
+    <div class="leaderboard-wrapper">
+
+
+      <!-- HEADER -->
+
+      <section class="leaderboard-header">
+
+        <div class="eyebrow">
+          COMPETITIVE RANKINGS
+        </div>
+
+        <h1>
+          Leaderboard
+        </h1>
+
+        <p>
+          View verified ValoriaTiers players and
+          their highest recorded PvP results.
+        </p>
+
+        <div class="live-status">
+          <span class="live-dot"></span>
+          Live leaderboard
+        </div>
+
+      </section>
+
+
+
+      <!-- FILTERS -->
+
+      <section class="filters">
+
+        <select
+          id="gamemodeFilter"
+          class="filter"
+        >
+
+          <option value="">
+            All Gamemodes
+          </option>
+
+          <option value="Sword">
+            Sword
+          </option>
+
+          <option value="Crystal">
+            Crystal
+          </option>
+
+          <option value="Axe">
+            Axe
+          </option>
+
+          <option value="Mace HT">
+            Mace HT
+          </option>
+
+          <option value="Mace LT">
+            Mace LT
+          </option>
+
+          <option value="UHC">
+            UHC
+          </option>
+
+          <option value="Pot">
+            Pot
+          </option>
+
+          <option value="NethPot">
+            NethPot
+          </option>
+
+          <option value="CartPvP">
+            CartPvP
+          </option>
+
+        </select>
+
+
+        <select
+          id="tierFilter"
+          class="filter"
+        >
+
+          <option value="">
+            All Tiers
+          </option>
+
+          <option value="HT1">HT1</option>
+          <option value="LT1">LT1</option>
+          <option value="HT2">HT2</option>
+          <option value="LT2">LT2</option>
+          <option value="HT3">HT3</option>
+          <option value="LT3">LT3</option>
+          <option value="HT4">HT4</option>
+          <option value="LT4">LT4</option>
+          <option value="HT5">HT5</option>
+          <option value="LT5">LT5</option>
+
+        </select>
+
+      </section>
+
+
+
+      <div
+        id="error"
+        class="error"
+      ></div>
+
+
+
+      <!-- TABLE -->
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                #
+              </th>
+
+              <th>
+                Player
+              </th>
+
+              <th>
+                Gamemode
+              </th>
+
+              <th>
+                Tier
+              </th>
+
+              <th>
+                Result
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="leaderboardBody">
+
+            <tr>
+
+              <td
+                colspan="5"
+                class="loading"
+              >
+                Loading leaderboard...
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
   </main>
-  <footer>
-    © 2026 ValoriaTiers
-    <span>Competitive PvP rankings.</span>
-  </footer>
+
+
+
+  <!-- SUPABASE -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script src="js/config.js"></script>
+
+
   <script>
-    const leaderboardDB =
+
+    const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_KEY
       );
-    const body = document.getElementById("leaderboardBody");
-    const modeFilter = document.getElementById("modeFilter");
-    const tierFilter = document.getElementById("tierFilter");
-    let allTests = [];
-    let allPlayers = [];
-    function safeText(value) {
+
+
+    const leaderboardBody =
+      document.getElementById(
+        "leaderboardBody"
+      );
+
+    const gamemodeFilter =
+      document.getElementById(
+        "gamemodeFilter"
+      );
+
+    const tierFilter =
+      document.getElementById(
+        "tierFilter"
+      );
+
+    const errorBox =
+      document.getElementById(
+        "error"
+      );
+
+
+    /*
+      TIER ORDER
+    */
+
+    const tierOrder = {
+
+      HT1: 1,
+      LT1: 2,
+
+      HT2: 3,
+      LT2: 4,
+
+      HT3: 5,
+      LT3: 6,
+
+      HT4: 7,
+      LT4: 8,
+
+      HT5: 9,
+      LT5: 10
+
+    };
+
+
+    /*
+      LOAD LEADERBOARD
+    */
+
+    async function loadLeaderboard() {
+
+      try {
+
+        errorBox.style.display =
+          "none";
+
+
+        /*
+          ONLY VERIFIED TIERS
+
+          Pending is NEVER selected.
+        */
+
+        let query =
+          supabaseClient
+            .from("tests")
+            .select(`
+              id,
+              player_id,
+              gamemode,
+              tier,
+              result,
+              created_at
+            `)
+            .in(
+              "tier",
+              [
+                "HT1",
+                "LT1",
+                "HT2",
+                "LT2",
+                "HT3",
+                "LT3",
+                "HT4",
+                "LT4",
+                "HT5",
+                "LT5"
+              ]
+            );
+
+
+        /*
+          GAMEMODE FILTER
+        */
+
+        if (
+          gamemodeFilter.value
+        ) {
+
+          query =
+            query.eq(
+              "gamemode",
+              gamemodeFilter.value
+            );
+
+        }
+
+
+        /*
+          TIER FILTER
+        */
+
+        if (
+          tierFilter.value
+        ) {
+
+          query =
+            query.eq(
+              "tier",
+              tierFilter.value
+            );
+
+        }
+
+
+        const {
+          data: tests,
+          error: testsError
+        } = await query;
+
+
+        if (testsError) {
+          throw testsError;
+        }
+
+
+        /*
+          NO RESULTS
+        */
+
+        if (!tests || !tests.length) {
+
+          showEmpty();
+
+          return;
+
+        }
+
+
+        /*
+          GET PLAYER IDS
+        */
+
+        const playerIds = [
+          ...new Set(
+            tests.map(
+              test => test.player_id
+            )
+          )
+        ];
+
+
+        const {
+          data: players,
+          error: playersError
+        } = await supabaseClient
+          .from("players")
+          .select(
+            "id,minecraft_username"
+          )
+          .in(
+            "id",
+            playerIds
+          );
+
+
+        if (playersError) {
+          throw playersError;
+        }
+
+
+        /*
+          PLAYER MAP
+        */
+
+        const playerMap = {};
+
+
+        players.forEach(player => {
+
+          playerMap[player.id] =
+            player.minecraft_username;
+
+        });
+
+
+        /*
+          SORT
+
+          Best tier first.
+        */
+
+        tests.sort(
+          (a, b) => {
+
+            const tierDifference =
+              tierOrder[a.tier] -
+              tierOrder[b.tier];
+
+            if (
+              tierDifference !== 0
+            ) {
+
+              return tierDifference;
+
+            }
+
+
+            return new Date(
+              a.created_at
+            ) - new Date(
+              b.created_at
+            );
+
+          }
+        );
+
+
+        /*
+          RENDER
+        */
+
+        leaderboardBody.innerHTML =
+          tests.map(
+            (test, index) => {
+
+              const username =
+                playerMap[
+                  test.player_id
+                ] || "Unknown Player";
+
+
+              const resultClass =
+                test.result === "Passed"
+                  ? "passed"
+                  : "failed";
+
+
+              return `
+
+                <tr>
+
+                  <td class="rank">
+                    #${index + 1}
+                  </td>
+
+                  <td>
+                    <span class="player-name">
+                      ${escapeHTML(username)}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span class="gamemode">
+                      ${escapeHTML(test.gamemode)}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span class="tier">
+                      ${escapeHTML(test.tier)}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span class="${resultClass}">
+                      ${escapeHTML(test.result || "Verified")}
+                    </span>
+                  </td>
+
+                </tr>
+
+              `;
+
+            }
+          ).join("");
+
+
+      } catch (error) {
+
+        console.error(
+          "Leaderboard error:",
+          error
+        );
+
+
+        errorBox.textContent =
+          "Could not load leaderboard: " +
+          error.message;
+
+        errorBox.style.display =
+          "block";
+
+
+        leaderboardBody.innerHTML = `
+
+          <tr>
+
+            <td
+              colspan="5"
+              class="empty"
+            >
+
+              Unable to load leaderboard.
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+
+    }
+
+
+    /*
+      EMPTY STATE
+    */
+
+    function showEmpty() {
+
+      leaderboardBody.innerHTML = `
+
+        <tr>
+
+          <td
+            colspan="5"
+            class="empty"
+          >
+
+            <strong>
+              No verified results
+            </strong>
+
+            No players match the selected filters.
+
+          </td>
+
+        </tr>
+
+      `;
+
+    }
+
+
+    /*
+      FILTER EVENTS
+    */
+
+    gamemodeFilter.addEventListener(
+      "change",
+      loadLeaderboard
+    );
+
+
+    tierFilter.addEventListener(
+      "change",
+      loadLeaderboard
+    );
+
+
+    /*
+      ESCAPE HTML
+    */
+
+    function escapeHTML(value) {
+
       return String(value ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+
     }
-    async function loadLeaderboard() {
-      body.innerHTML = `
-        <tr>
-          <td colspan="5" class="empty">Loading rankings...</td>
-        </tr>
-      `;
-      const playersResult = await leaderboardDB
-        .from("players")
-        .select("id,minecraft_username");
-      if (playersResult.error) {
-        console.error(playersResult.error);
-        body.innerHTML = `
-          <tr>
-            <td colspan="5" class="empty">
-              ${safeText(playersResult.error.message)}
-            </td>
-          </tr>
-        `;
-        return;
-      }
-      allPlayers = playersResult.data || [];
-      const testsResult = await leaderboardDB
-        .from("tests")
-        .select("id,player_id,gamemode,tier,result,created_at")
-        .order("created_at", { ascending: false });
-      if (testsResult.error) {
-        console.error(testsResult.error);
-        body.innerHTML = `
-          <tr>
-            <td colspan="5" class="empty">
-              ${safeText(testsResult.error.message)}
-            </td>
-          </tr>
-        `;
-        return;
-      }
-      allTests = testsResult.data || [];
-      const playerMap = {};
-      allPlayers.forEach(player => {
-        playerMap[player.id] = player.minecraft_username;
-      });
-      const gamemodes = [
-        ...new Set(
-          allTests
-            .map(test => test.gamemode)
-            .filter(Boolean)
-        )
-      ];
-      modeFilter.innerHTML =
-        `<option value="">All Gamemodes</option>` +
-        gamemodes
-          .map(mode =>
-            `<option value="${safeText(mode)}">${safeText(mode)}</option>`
-          )
-          .join("");
-      function render() {
-        const selectedMode = modeFilter.value;
-        const selectedTier = tierFilter.value;
-        const filtered = allTests.filter(test => {
-          const modeMatch =
-            !selectedMode ||
-            test.gamemode === selectedMode;
-          const tierMatch =
-            !selectedTier ||
-            test.tier === selectedTier;
-          return modeMatch && tierMatch;
-        });
-        if (!filtered.length) {
-          body.innerHTML = `
-            <tr>
-              <td colspan="5" class="empty">
-                No results yet.
-              </td>
-            </tr>
-          `;
-          return;
-        }
-        body.innerHTML = filtered
-          .map((test, index) => {
-            const playerName =
-              playerMap[test.player_id] || "Unknown";
-            return `
-              <tr>
-                <td>${index + 1}</td>
-                <td>
-                  ${safeText(playerName)}
-                </td>
-                <td>
-                  ${safeText(test.gamemode)}
-                </td>
-                <td class="tier">
-                  ${safeText(test.tier)}
-                </td>
-                <td>
-                  ${safeText(test.result || "Verified")}
-                </td>
-              </tr>
-            `;
-          })
-          .join("");
-      }
-      modeFilter.onchange = render;
-      tierFilter.onchange = render;
-      render();
-    }
+
+
+    /*
+      INITIAL LOAD
+    */
+
     loadLeaderboard();
+
+
+    /*
+      LIVE REFRESH
+
+      Every 5 seconds.
+    */
+
+    setInterval(
+      loadLeaderboard,
+      5000
+    );
+
   </script>
+
 </body>
 </html>
