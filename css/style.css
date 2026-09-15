@@ -1311,7 +1311,590 @@ td {
     padding: 20px;
   }
 }
+/* =========================================================
+   LEGACY PAGE COMPATIBILITY
+   Players / Get Tested / Leaderboard
+========================================================= */
 
+/* OLD NAVBAR */
+
+body > header:not(.navbar) {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 74px;
+  padding: 0 max(20px, calc((100% - 1180px) / 2));
+
+  gap: 25px;
+
+  background: rgba(5, 7, 20, .82);
+
+  border-bottom: 1px solid rgba(120, 140, 255, .10);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+
+/* OLD BRAND */
+
+body > header:not(.navbar) .brand {
+  display: inline-flex;
+
+  align-items: center;
+  gap: 8px;
+
+  color: #f5f7ff;
+
+  font-size: 16px;
+  font-weight: 900;
+
+  letter-spacing: .08em;
+
+  white-space: nowrap;
+}
+
+body > header:not(.navbar) .brand b {
+  display: grid;
+
+  width: 38px;
+  height: 38px;
+
+  place-items: center;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #287eff,
+      #7559ff
+    );
+
+  box-shadow:
+    0 0 20px rgba(50, 120, 255, .25);
+}
+
+body > header:not(.navbar) .brand span {
+  color: #4daeff;
+}
+
+
+/* OLD NAV */
+
+body > header:not(.navbar) nav {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+}
+
+body > header:not(.navbar) nav a {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 9px 13px;
+
+  border-radius: 9px;
+
+  color: #aeb7d2;
+
+  font-size: 14px;
+
+  transition:
+    .2s var(--ease);
+}
+
+body > header:not(.navbar) nav a:hover {
+  color: white;
+
+  background:
+    rgba(255,255,255,.055);
+}
+
+
+/* REQUEST TEST BUTTON */
+
+.navbtn {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 40px;
+
+  padding: 0 14px;
+
+  border:
+    1px solid
+    rgba(70, 150, 255, .25);
+
+  border-radius: 10px;
+
+  background:
+    rgba(35, 115, 255, .10);
+
+  color: white;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  transition:
+    .25s var(--ease);
+}
+
+.navbtn:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(70, 170, 255, .5);
+
+  box-shadow:
+    0 8px 28px
+    rgba(35,120,255,.16);
+}
+
+
+/* =========================================================
+   OLD PAGE LAYOUT
+========================================================= */
+
+.page {
+  width:
+    min(1180px, calc(100% - 40px));
+
+  min-height:
+    calc(100vh - 150px);
+
+  margin: auto;
+
+  padding:
+    85px 0 100px;
+}
+
+
+/* PAGE TITLE */
+
+.title {
+  margin-bottom: 35px;
+}
+
+.title small {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: #66baff;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  letter-spacing: .16em;
+}
+
+.title h1 {
+  margin: 0 0 12px;
+
+  font-size:
+    clamp(42px, 6vw, 70px);
+
+  line-height: .95;
+
+  letter-spacing: -.05em;
+}
+
+.title p {
+  max-width: 650px;
+
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 16px;
+
+  line-height: 1.7;
+}
+
+
+/* SEARCH */
+
+.search {
+  display: block;
+
+  width: min(680px, 100%);
+
+  min-height: 54px;
+
+  margin-bottom: 30px;
+
+  padding:
+    0 18px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 13px;
+
+  background:
+    rgba(8, 12, 28, .85);
+
+  color: white;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition: .2s ease;
+}
+
+.search::placeholder {
+  color: #737e9e;
+}
+
+.search:focus {
+  border-color:
+    rgba(70,150,255,.55);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(50,120,255,.08);
+}
+
+
+/* =========================================================
+   PLAYER LIST
+========================================================= */
+
+.list {
+  display: grid;
+
+  gap: 12px;
+}
+
+.list > * {
+  position: relative;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 16px;
+
+  background:
+    rgba(12, 16, 36, .72);
+
+  transition:
+    .25s var(--ease);
+}
+
+.list > *:hover {
+  border-color:
+    var(--border2);
+
+  transform:
+    translateY(-2px);
+
+  background:
+    rgba(18, 23, 50, .88);
+}
+
+.empty {
+  padding: 55px 20px;
+
+  text-align: center;
+
+  color: var(--muted);
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form {
+  width:
+    min(700px, 100%);
+
+  display: grid;
+
+  gap: 17px;
+
+  padding: 28px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 20px;
+
+  background:
+    rgba(12, 16, 38, .72);
+
+  box-shadow:
+    var(--shadow);
+}
+
+.form label {
+  display: grid;
+
+  gap: 8px;
+
+  color: #dce2f5;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.form input,
+.form select,
+.form textarea {
+  width: 100%;
+
+  padding: 13px 14px;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius: 10px;
+
+  background:
+    rgba(255,255,255,.045);
+
+  color: white;
+
+  outline: none;
+
+  resize: vertical;
+}
+
+.form textarea {
+  min-height: 110px;
+}
+
+.form input:focus,
+.form select:focus,
+.form textarea:focus {
+  border-color:
+    rgba(80,150,255,.55);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(50,120,255,.08);
+}
+
+
+/* FORM BUTTON */
+
+.btn {
+  border: none;
+
+  cursor: pointer;
+
+  min-height: 46px;
+
+  padding:
+    0 18px;
+
+  border-radius: 11px;
+
+  font-weight: 800;
+
+  transition: .25s var(--ease);
+}
+
+.btn.primary {
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #287eff,
+      #7559ff
+    );
+
+  box-shadow:
+    0 10px 30px
+    rgba(68,91,255,.22);
+}
+
+.btn.primary:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 38px
+    rgba(68,91,255,.35);
+}
+
+
+/* =========================================================
+   FOOTER COMPATIBILITY
+========================================================= */
+
+body > footer {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding:
+    28px max(20px, calc((100% - 1180px) / 2));
+
+  border-top:
+    1px solid
+    rgba(120,140,255,.10);
+
+  color: #59647f;
+
+  font-size: 12px;
+
+  background:
+    rgba(3,5,14,.72);
+}
+
+body > footer span {
+  color: #59647f;
+}
+
+
+/* =========================================================
+   LEADERBOARD NAVBAR
+========================================================= */
+
+.navbar .nav-inner {
+  width:
+    min(1180px, calc(100% - 40px));
+
+  min-height: 74px;
+
+  margin: auto;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 25px;
+}
+
+.navbar nav {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+}
+
+.navbar nav a {
+  padding: 9px 13px;
+
+  border-radius: 9px;
+
+  color: #aeb7d2;
+
+  font-size: 14px;
+
+  transition: .2s ease;
+}
+
+.navbar nav a:hover {
+  color: white;
+
+  background:
+    rgba(255,255,255,.055);
+}
+
+.navbar .brand {
+  color: white;
+
+  font-weight: 900;
+
+  letter-spacing: .08em;
+}
+
+.navbar .brand span {
+  color: #4daeff;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 720px) {
+
+  body > header:not(.navbar) {
+    padding: 0 14px;
+  }
+
+  body > header:not(.navbar) nav {
+    display: none;
+  }
+
+  body > header:not(.navbar) .brand {
+    font-size: 13px;
+  }
+
+  body > header:not(.navbar) .brand b {
+    width: 34px;
+    height: 34px;
+  }
+
+  .navbtn {
+    min-height: 37px;
+
+    padding: 0 11px;
+
+    font-size: 12px;
+  }
+
+  .page {
+    width:
+      calc(100% - 28px);
+
+    padding:
+      55px 0 70px;
+  }
+
+  .title h1 {
+    font-size:
+      clamp(42px, 13vw, 62px);
+  }
+
+  .form {
+    padding: 20px;
+  }
+
+  .navbar .nav-inner {
+    width:
+      calc(100% - 28px);
+  }
+
+  .navbar nav {
+    display: none;
+  }
+
+  body > footer {
+    flex-direction: column;
+
+    text-align: center;
+  }
+}
 
 /* =========================================================
    REDUCED MOTION
