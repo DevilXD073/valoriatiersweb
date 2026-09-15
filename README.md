@@ -1,1 +1,1 @@
-# valoriatiersweb
+ValoriaTiers improved frontend. Add Supabase URL + Publishable/anon key in js/config.js. Never use service_role in frontend. Tester/Admin pages are UI starters; add authentication and RLS policies before production.
