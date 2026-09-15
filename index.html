@@ -1,1 +1,1101 @@
-<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ValoriaTiers</title><link rel="stylesheet" href="css/style.css"></head><body><div class="grid"></div><header><a class="brand" href="index.html"><b>V</b> VALORIA<span>TIERS</span></a><nav><a class="active" href="index.html">Home</a><a href="players.html">Players</a><a href="leaderboard.html">Leaderboard</a><a href="test.html">Get Tested</a></nav><a class="navbtn" href="test.html">Request Test</a></header><main><section class="hero reveal"><small>● COMPETITIVE MINECRAFT PVP</small><h1>Prove your skill.<br><em>Earn your tier.</em></h1><p>A competitive ranking platform for Minecraft PvP. Get tested, earn verified placements and climb the leaderboard.</p><div><a class="btn primary" href="test.html">Get Tested →</a><a class="btn" href="leaderboard.html">Leaderboard</a></div><aside><strong id="statPlayers">0</strong><label>Players</label><strong id="statTests">0</strong><label>Tests</label><strong>9</strong><label>Gamemodes</label></aside></section><section class="reveal"><small>COMPETE</small><h2>Choose your gamemode</h2><div id="gamemodeGrid" class="modes"></div></section><section class="cards reveal"><article><i>01</i><h3>Get tested</h3><p>Request a test for the gamemode you want.</p><a href="test.html">Start request →</a></article><article><i>02</i><h3>Get ranked</h3><p>Your verified result appears on your profile.</p><a href="players.html">Browse players →</a></article><article><i>03</i><h3>Climb higher</h3><p>Improve your tier and compete for the top.</p><a href="leaderboard.html">See rankings →</a></article></section></main><footer>© 2026 ValoriaTiers <span>Built for competitive Minecraft PvP.</span></footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/config.js"></script><script src="js/app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ValoriaTiers — Minecraft PvP Rankings</title>
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* =========================
+       PAGE
+    ========================= */
+
+    body {
+      overflow-x: hidden;
+    }
+
+    .hero {
+      min-height: 78vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 650px;
+      height: 650px;
+      top: -250px;
+      right: -180px;
+      background: radial-gradient(
+        circle,
+        rgba(112, 88, 255, 0.20),
+        transparent 68%
+      );
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      bottom: -250px;
+      left: -180px;
+      background: radial-gradient(
+        circle,
+        rgba(0, 174, 255, 0.12),
+        transparent 70%
+      );
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 80px 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: rgba(112, 88, 255, 0.10);
+      border: 1px solid rgba(112, 88, 255, 0.24);
+      color: #bdb6ff;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 22px;
+      animation: fadeUp .7s ease both;
+    }
+
+    .hero h1 {
+      font-size: clamp(45px, 8vw, 88px);
+      line-height: .98;
+      letter-spacing: -3px;
+      margin: 0;
+      animation: fadeUp .8s ease both;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(
+        90deg,
+        #ffffff,
+        #a99dff,
+        #67cfff
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-description {
+      max-width: 680px;
+      color: #9298b2;
+      font-size: 17px;
+      line-height: 1.7;
+      margin: 24px 0 30px;
+      animation: fadeUp .9s ease both;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      animation: fadeUp 1s ease both;
+    }
+
+    .hero-buttons a {
+      text-decoration: none;
+    }
+
+    .primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 20px;
+      border-radius: 12px;
+      background: linear-gradient(
+        135deg,
+        #7567ff,
+        #4b9cff
+      );
+      color: white;
+      font-weight: 800;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 12px 35px rgba(93, 80, 255, .20);
+      transition: .25s ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 17px 40px rgba(93, 80, 255, .30);
+    }
+
+    .secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 20px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.025);
+      color: #dfe3f5;
+      font-weight: 700;
+      border: 1px solid #282d49;
+      transition: .25s ease;
+    }
+
+    .secondary-btn:hover {
+      transform: translateY(-3px);
+      border-color: #555b82;
+      background: rgba(255,255,255,.045);
+    }
+
+
+    /* =========================
+       LIVE STATS
+       ========================= */
+
+    .stats-section {
+      position: relative;
+      z-index: 5;
+      margin-top: -40px;
+    }
+
+    .stats-grid {
+      max-width: 1100px;
+      margin: auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .live-stat {
+      position: relative;
+      overflow: hidden;
+      background: rgba(13, 16, 32, .88);
+      border: 1px solid rgba(117, 103, 255, .15);
+      border-radius: 18px;
+      padding: 23px;
+      backdrop-filter: blur(12px);
+      transition: .25s ease;
+    }
+
+    .live-stat::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      right: -55px;
+      top: -55px;
+      background: radial-gradient(
+        circle,
+        rgba(117,103,255,.16),
+        transparent 70%
+      );
+    }
+
+    .live-stat:hover {
+      transform: translateY(-4px);
+      border-color: rgba(117, 103, 255, .35);
+    }
+
+    .stat-title {
+      color: #858ca7;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .stat-status {
+      color: #6fcaff;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .stat-number.loading {
+      opacity: .45;
+    }
+
+
+    /* =========================
+       GAMEMODES
+       ========================= */
+
+    .section {
+      max-width: 1200px;
+      margin: auto;
+      padding: 90px 24px;
+    }
+
+    .section-heading {
+      margin-bottom: 30px;
+    }
+
+    .section-heading h2 {
+      margin: 8px 0;
+      font-size: 36px;
+    }
+
+    .section-heading p {
+      color: #858ca7;
+      max-width: 650px;
+      line-height: 1.6;
+    }
+
+    .gamemode-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .gamemode-card {
+      padding: 23px;
+      border-radius: 18px;
+      background: rgba(13, 16, 32, .65);
+      border: 1px solid #20253d;
+      transition: .25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gamemode-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(117,103,255,.35);
+      background: rgba(17, 20, 40, .9);
+    }
+
+    .gamemode-card h3 {
+      margin: 0 0 8px;
+    }
+
+    .gamemode-card p {
+      color: #8188a2;
+      font-size: 14px;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .mode-number {
+      color: #6e67b7;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 13px;
+    }
+
+
+    /* =========================
+       FEATURES
+       ========================= */
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .feature {
+      padding: 25px;
+      border-radius: 18px;
+      background: linear-gradient(
+        145deg,
+        rgba(20,23,43,.9),
+        rgba(10,13,27,.8)
+      );
+      border: 1px solid #20253d;
+    }
+
+    .feature h3 {
+      margin-top: 0;
+    }
+
+    .feature p {
+      color: #8188a2;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+
+    /* =========================
+       CTA
+       ========================= */
+
+    .cta {
+      max-width: 1150px;
+      margin: 20px auto 90px;
+      padding: 55px 30px;
+      border-radius: 25px;
+      text-align: center;
+      background:
+        radial-gradient(
+          circle at top,
+          rgba(103, 87, 255, .17),
+          transparent 65%
+        ),
+        rgba(14, 17, 34, .9);
+      border: 1px solid rgba(117,103,255,.18);
+    }
+
+    .cta h2 {
+      font-size: 38px;
+      margin: 0 0 12px;
+    }
+
+    .cta p {
+      color: #878da7;
+      margin-bottom: 25px;
+    }
+
+
+    /* =========================
+       ANIMATION
+       ========================= */
+
+    @keyframes fadeUp {
+
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+    }
+
+
+    /* =========================
+       RESPONSIVE
+       ========================= */
+
+    @media (max-width: 850px) {
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gamemode-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 600px) {
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-inner {
+        padding: 65px 20px 90px;
+      }
+
+      .hero h1 {
+        letter-spacing: -2px;
+      }
+
+      .gamemode-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-section {
+        margin-top: -25px;
+      }
+
+      .section {
+        padding: 65px 20px;
+      }
+
+      .cta {
+        margin: 10px 20px 60px;
+      }
+
+      .cta h2 {
+        font-size: 30px;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+
+  <!-- =========================
+       NAVBAR
+       ========================= -->
+
+  <header class="navbar">
+
+    <div class="nav-inner">
+
+      <a href="index.html" class="brand">
+        Valoria<span>Tiers</span>
+      </a>
+
+      <nav>
+
+        <a href="players.html">
+          Players
+        </a>
+
+        <a href="leaderboard.html">
+          Leaderboard
+        </a>
+
+        <a href="test.html">
+          Get Tested
+        </a>
+
+        <a href="tester.html">
+          Tester
+        </a>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- =========================
+       HERO
+       ========================= -->
+
+  <main>
+
+    <section class="hero">
+
+      <div class="hero-inner">
+
+        <div class="hero-content">
+
+          <div class="hero-badge">
+            ● Competitive Minecraft PvP Rankings
+          </div>
+
+          <h1>
+            Prove your skill.<br>
+            <span>Claim your tier.</span>
+          </h1>
+
+          <p class="hero-description">
+            ValoriaTiers is a competitive Minecraft PvP
+            ranking platform where players can get tested,
+            earn verified tiers and compete on the leaderboard.
+          </p>
+
+          <div class="hero-buttons">
+
+            <a
+              href="leaderboard.html"
+              class="primary-btn"
+            >
+              View Leaderboard
+            </a>
+
+            <a
+              href="test.html"
+              class="secondary-btn"
+            >
+              Get Tested
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         LIVE STATS
+         ========================= -->
+
+    <section class="stats-section">
+
+      <div class="stats-grid">
+
+        <div class="live-stat">
+
+          <div class="stat-title">
+            Total Players
+          </div>
+
+          <div
+            id="playersCount"
+            class="stat-number loading"
+          >
+            —
+          </div>
+
+          <div class="stat-status">
+            Live database count
+          </div>
+
+        </div>
+
+
+        <div class="live-stat">
+
+          <div class="stat-title">
+            Total Tests
+          </div>
+
+          <div
+            id="testsCount"
+            class="stat-number loading"
+          >
+            —
+          </div>
+
+          <div class="stat-status">
+            Live database count
+          </div>
+
+        </div>
+
+
+        <div class="live-stat">
+
+          <div class="stat-title">
+            Active Gamemodes
+          </div>
+
+          <div
+            id="gamemodesCount"
+            class="stat-number loading"
+          >
+            —
+          </div>
+
+          <div class="stat-status">
+            Currently enabled
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         GAMEMODES
+         ========================= -->
+
+    <section class="section">
+
+      <div class="section-heading">
+
+        <div class="eyebrow">
+          COMPETE
+        </div>
+
+        <h2>
+          Choose your battlefield
+        </h2>
+
+        <p>
+          Get tested across multiple Minecraft PvP
+          gamemodes and build your competitive profile.
+        </p>
+
+      </div>
+
+
+      <div class="gamemode-grid">
+
+        <div class="gamemode-card">
+
+          <div class="mode-number">
+            01
+          </div>
+
+          <h3>
+            Sword
+          </h3>
+
+          <p>
+            Pure sword PvP fundamentals,
+            movement and combo control.
+          </p>
+
+        </div>
+
+
+        <div class="gamemode-card">
+
+          <div class="mode-number">
+            02
+          </div>
+
+          <h3>
+            Crystal
+          </h3>
+
+          <p>
+            Crystal placement, explosions,
+            movement and combat awareness.
+          </p>
+
+        </div>
+
+
+        <div class="gamemode-card">
+
+          <div class="mode-number">
+            03
+          </div>
+
+          <h3>
+            Axe
+          </h3>
+
+          <p>
+            Shield breaking, timing and
+            high-damage axe combat.
+          </p>
+
+        </div>
+
+
+        <div class="gamemode-card">
+
+          <div class="mode-number">
+            04
+          </div>
+
+          <h3>
+            Mace HT
+          </h3>
+
+          <p>
+            High-tier mace combat focused
+            on advanced mechanics.
+          </p>
+
+        </div>
+
+
+        <div class="gamemode-card">
+
+          <div class="mode-number">
+            05
+          </div>
+
+          <h3>
+            Mace LT
+          </h3>
+
+          <p>
+            Lower-tier mace testing with
+            competitive combat fundamentals.
+          </p>
+
+        </div>
+
+
+        <div class="gamemode-card">
+
+          <div class="mode-number">
+            06
+          </div>
+
+          <h3>
+            UHC
+          </h3>
+
+          <p>
+            Resource management, movement
+            and traditional UHC PvP.
+          </p>
+
+        </div>
+
+
+        <div class="gamemode-card">
+
+          <div class="mode-number">
+            07
+          </div>
+
+          <h3>
+            Pot
+          </h3>
+
+          <p>
+            Potion management, combos
+            and mechanical precision.
+          </p>
+
+        </div>
+
+
+        <div class="gamemode-card">
+
+          <div class="mode-number">
+            08
+          </div>
+
+          <h3>
+            NethPot
+          </h3>
+
+          <p>
+            Netherite potion combat with
+            advanced movement mechanics.
+          </p>
+
+        </div>
+
+
+        <div class="gamemode-card">
+
+          <div class="mode-number">
+            09
+          </div>
+
+          <h3>
+            CartPvP
+          </h3>
+
+          <p>
+            Explosive minecart combat,
+            positioning and reaction speed.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         FEATURES
+         ========================= -->
+
+    <section class="section">
+
+      <div class="section-heading">
+
+        <div class="eyebrow">
+          THE PLATFORM
+        </div>
+
+        <h2>
+          Built for competitive PvP
+        </h2>
+
+      </div>
+
+
+      <div class="features">
+
+        <div class="feature">
+
+          <h3>
+            Verified Tiers
+          </h3>
+
+          <p>
+            Players receive tiers after being tested
+            by authorized ValoriaTiers testers.
+          </p>
+
+        </div>
+
+
+        <div class="feature">
+
+          <h3>
+            Competitive Leaderboards
+          </h3>
+
+          <p>
+            Compare your performance against other
+            players across different gamemodes.
+          </p>
+
+        </div>
+
+
+        <div class="feature">
+
+          <h3>
+            Player Profiles
+          </h3>
+
+          <p>
+            Build your PvP identity with your Minecraft
+            account, region and verified results.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         CTA
+         ========================= -->
+
+    <section class="cta">
+
+      <h2>
+        Think you're good enough?
+      </h2>
+
+      <p>
+        Get tested and find out where you really stand.
+      </p>
+
+      <a
+        href="test.html"
+        class="primary-btn"
+      >
+        Request a Test
+      </a>
+
+    </section>
+
+  </main>
+
+
+
+  <!-- =========================
+       SUPABASE
+       ========================= -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="js/config.js"></script>
+
+
+  <script>
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    const playersCount =
+      document.getElementById(
+        "playersCount"
+      );
+
+    const testsCount =
+      document.getElementById(
+        "testsCount"
+      );
+
+    const gamemodesCount =
+      document.getElementById(
+        "gamemodesCount"
+      );
+
+
+    /*
+      FORMAT NUMBER
+    */
+
+    function formatNumber(number) {
+
+      return Number(number || 0)
+        .toLocaleString();
+
+    }
+
+
+    /*
+      LOAD LIVE STATS
+    */
+
+    async function loadStats() {
+
+      try {
+
+        /*
+          PLAYERS
+        */
+
+        const {
+          count: playerCount,
+          error: playerError
+        } = await supabaseClient
+          .from("players")
+          .select(
+            "id",
+            {
+              count: "exact",
+              head: true
+            }
+          );
+
+
+        if (playerError) {
+          throw playerError;
+        }
+
+
+        /*
+          TESTS
+        */
+
+        const {
+          count: testCount,
+          error: testError
+        } = await supabaseClient
+          .from("tests")
+          .select(
+            "id",
+            {
+              count: "exact",
+              head: true
+            }
+          );
+
+
+        if (testError) {
+          throw testError;
+        }
+
+
+        /*
+          GAMEMODES
+        */
+
+        const {
+          count: gamemodeCount,
+          error: gamemodeError
+        } = await supabaseClient
+          .from("gamemodes")
+          .select(
+            "id",
+            {
+              count: "exact",
+              head: true
+            }
+          )
+          .eq(
+            "enabled",
+            true
+          );
+
+
+        if (gamemodeError) {
+          throw gamemodeError;
+        }
+
+
+        /*
+          UPDATE UI
+        */
+
+        playersCount.textContent =
+          formatNumber(playerCount);
+
+        testsCount.textContent =
+          formatNumber(testCount);
+
+        gamemodesCount.textContent =
+          formatNumber(gamemodeCount);
+
+
+        playersCount.classList.remove(
+          "loading"
+        );
+
+        testsCount.classList.remove(
+          "loading"
+        );
+
+        gamemodesCount.classList.remove(
+          "loading"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "ValoriaTiers stats error:",
+          error
+        );
+
+
+        playersCount.textContent =
+          "—";
+
+        testsCount.textContent =
+          "—";
+
+        gamemodesCount.textContent =
+          "—";
+
+      }
+
+    }
+
+
+    /*
+      INITIAL LOAD
+    */
+
+    loadStats();
+
+
+    /*
+      AUTO REFRESH
+      Every 10 seconds
+    */
+
+    setInterval(
+      loadStats,
+      10000
+    );
+
+
+  </script>
+
+</body>
+</html>
