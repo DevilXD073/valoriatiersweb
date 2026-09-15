@@ -1,1 +1,200 @@
-<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leaderboard — ValoriaTiers</title><link rel="stylesheet" href="css/style.css"></head><body><div class="grid"></div><header><a class="brand" href="index.html"><b>V</b> VALORIA<span>TIERS</span></a><nav><a href="index.html">Home</a><a href="players.html">Players</a><a href="leaderboard.html">Leaderboard</a><a href="test.html">Get Tested</a></nav><a class="navbtn" href="test.html">Request Test</a></header><main class="page"><section class="title reveal"><small>RANKINGS</small><h1>Leaderboard</h1><p>The highest verified placements across ValoriaTiers.</p></section><div class="filters reveal"><select id="modeFilter"><option value="">All Gamemodes</option></select><select id="tierFilter"><option value="">All Tiers</option><option>HT1</option><option>LT1</option><option>HT2</option><option>LT2</option><option>HT3</option><option>LT3</option><option>HT4</option><option>LT4</option><option>HT5</option><option>LT5</option></select></div><div class="table reveal"><table><thead><tr><th>#</th><th>Player</th><th>Gamemode</th><th>Tier</th><th>Result</th></tr></thead><tbody id="leaderboardBody"><tr><td colspan="5" class="empty">Loading...</td></tr></tbody></table></div></main><footer>© 2026 ValoriaTiers <span>Competitive PvP rankings.</span></footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/config.js"></script><script src="js/app.js"></script></body></html>
+<!doctype html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Leaderboard — ValoriaTiers</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="grid"></div>
+  <header>
+    <a class="brand" href="index.html">
+      <b>V</b> VALORIA<span>TIERS</span>
+    </a>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="players.html">Players</a>
+  <a href="leaderboard.html">Leaderboard</a>
+  <a href="test.html">Get Tested</a>
+</nav>
+<a class="navbtn" href="test.html">Request Test</a>
+  </header>
+  <main class="page">
+<section class="title reveal">
+  <small>RANKINGS</small>
+  <h1>Leaderboard</h1>
+  <p>The highest verified placements across ValoriaTiers.</p>
+</section>
+<div class="filters reveal">
+  <select id="modeFilter">
+    <option value="">All Gamemodes</option>
+  </select>
+  <select id="tierFilter">
+    <option value="">All Tiers</option>
+    <option value="HT1">HT1</option>
+    <option value="LT1">LT1</option>
+    <option value="HT2">HT2</option>
+    <option value="LT2">LT2</option>
+    <option value="HT3">HT3</option>
+    <option value="LT3">LT3</option>
+    <option value="HT4">HT4</option>
+    <option value="LT4">LT4</option>
+    <option value="HT5">HT5</option>
+    <option value="LT5">LT5</option>
+  </select>
+</div>
+<div class="table reveal">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Player</th>
+        <th>Gamemode</th>
+        <th>Tier</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody id="leaderboardBody">
+      <tr>
+        <td colspan="5" class="empty">Loading...</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+  </main>
+  <footer>
+    © 2026 ValoriaTiers
+    <span>Competitive PvP rankings.</span>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script>
+    const leaderboardDB =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+    const body = document.getElementById("leaderboardBody");
+    const modeFilter = document.getElementById("modeFilter");
+    const tierFilter = document.getElementById("tierFilter");
+    let allTests = [];
+    let allPlayers = [];
+    function safeText(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+    async function loadLeaderboard() {
+      body.innerHTML = `
+        <tr>
+          <td colspan="5" class="empty">Loading rankings...</td>
+        </tr>
+      `;
+      const playersResult = await leaderboardDB
+        .from("players")
+        .select("id,minecraft_username");
+      if (playersResult.error) {
+        console.error(playersResult.error);
+        body.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty">
+              ${safeText(playersResult.error.message)}
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      allPlayers = playersResult.data || [];
+      const testsResult = await leaderboardDB
+        .from("tests")
+        .select("id,player_id,gamemode,tier,result,created_at")
+        .order("created_at", { ascending: false });
+      if (testsResult.error) {
+        console.error(testsResult.error);
+        body.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty">
+              ${safeText(testsResult.error.message)}
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      allTests = testsResult.data || [];
+      const playerMap = {};
+      allPlayers.forEach(player => {
+        playerMap[player.id] = player.minecraft_username;
+      });
+      const gamemodes = [
+        ...new Set(
+          allTests
+            .map(test => test.gamemode)
+            .filter(Boolean)
+        )
+      ];
+      modeFilter.innerHTML =
+        `<option value="">All Gamemodes</option>` +
+        gamemodes
+          .map(mode =>
+            `<option value="${safeText(mode)}">${safeText(mode)}</option>`
+          )
+          .join("");
+      function render() {
+        const selectedMode = modeFilter.value;
+        const selectedTier = tierFilter.value;
+        const filtered = allTests.filter(test => {
+          const modeMatch =
+            !selectedMode ||
+            test.gamemode === selectedMode;
+          const tierMatch =
+            !selectedTier ||
+            test.tier === selectedTier;
+          return modeMatch && tierMatch;
+        });
+        if (!filtered.length) {
+          body.innerHTML = `
+            <tr>
+              <td colspan="5" class="empty">
+                No results yet.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+        body.innerHTML = filtered
+          .map((test, index) => {
+            const playerName =
+              playerMap[test.player_id] || "Unknown";
+            return `
+              <tr>
+                <td>${index + 1}</td>
+                <td>
+                  ${safeText(playerName)}
+                </td>
+                <td>
+                  ${safeText(test.gamemode)}
+                </td>
+                <td class="tier">
+                  ${safeText(test.tier)}
+                </td>
+                <td>
+                  ${safeText(test.result || "Verified")}
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
+      modeFilter.onchange = render;
+      tierFilter.onchange = render;
+      render();
+    }
+    loadLeaderboard();
+  </script>
+</body>
+</html>
